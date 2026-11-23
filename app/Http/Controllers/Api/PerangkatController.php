@@ -5,17 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Perangkat;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class PerangkatController extends Controller
 {
-    // Melihat semua perangkat
+    // Melihat semua perangkat (Admin dan User)
     public function index()
     {
         return response()->json(Perangkat::all());
     }
 
-    // Melihat satu perangkat
+    // Melihat satu perangkat (Admin dan User)
     public function show($nomor_seri)
     {
         return response()->json(
@@ -23,7 +22,7 @@ class PerangkatController extends Controller
         );
     }
 
-    // Menambahkan perangkat
+    // Menambahkan perangkat (Admin dan User)
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -33,6 +32,9 @@ class PerangkatController extends Controller
             'kondisi' => 'nullable|string|max:100',
             'status_kepemilikan' => 'nullable|string|max:50',
         ]);
+
+        // Pemilik otomatis berdasarkan akun yang login
+        $data['user_id'] = $request->user()->id;
 
         $perangkat = Perangkat::create($data);
 
@@ -46,6 +48,17 @@ class PerangkatController extends Controller
     public function update(Request $request, $nomor_seri)
     {
         $perangkat = Perangkat::findOrFail($nomor_seri);
+        $user = $request->user();
+
+        // User hanya boleh mengubah perangkat miliknya sendiri
+        // Admin boleh mengubah semua perangkat
+        if ($user->role !== 'admin' &&
+            $perangkat->user_id !== $user->id) {
+
+            return response()->json([
+                'message' => 'Anda hanya boleh mengubah perangkat milik sendiri'
+            ], 403);
+        }
 
         $data = $request->validate([
             'merek' => 'sometimes|nullable|string|max:50',
@@ -62,9 +75,15 @@ class PerangkatController extends Controller
         ]);
     }
 
-    // Menghapus perangkat
-    public function destroy($nomor_seri)
+    // Menghapus perangkat (Khusus Admin)
+    public function destroy(Request $request, $nomor_seri)
     {
+        if ($request->user()->role !== 'admin') {
+            return response()->json([
+                'message' => 'Akses khusus Admin'
+            ], 403);
+        }
+
         $perangkat = Perangkat::findOrFail($nomor_seri);
 
         $perangkat->delete();

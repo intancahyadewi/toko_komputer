@@ -21,6 +21,12 @@ class Perangkat extends Model
         'merek',
         'model',
         'kondisi',
-        'status_kepemilikan'
+        'status_kepemilikan',
+        'user_id'
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }
