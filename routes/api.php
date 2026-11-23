@@ -8,7 +8,7 @@ use App\Http\Middleware\AdminOnly;
 use App\Http\Controllers\Api\SukuCadangController;
 use App\Http\Controllers\Api\TiketServisController;
 use App\Http\Controllers\Api\NotaPenjualanController;
-
+use App\Http\Controllers\Api\PelangganController;
 
 // Endpoint publik (tanpa login)
 Route::post('/login', [AuthController::class, 'login']);
@@ -85,5 +85,22 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/nota-penjualan/{nomor_nota}', [NotaPenjualanController::class, 'destroy'])
         ->middleware(\App\Http\Middleware\AdminOnly::class);
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/pelanggan', [PelangganController::class, 'index']);
+
+    Route::get('/pelanggan/{id}', [PelangganController::class, 'show']);
+
+    Route::post('/pelanggan', [PelangganController::class, 'store']);
+
+    Route::put('/pelanggan/{id}', [PelangganController::class, 'update']);
+
+    Route::delete('/pelanggan/{id}', [PelangganController::class, 'destroy'])
+        ->middleware(\App\Http\Middleware\AdminOnly::class);
+
+});
+
 
 
