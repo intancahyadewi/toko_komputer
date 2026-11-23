@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PerangkatController;
 use App\Http\Middleware\AdminOnly;
 use App\Http\Controllers\Api\SukuCadangController;
+use App\Http\Controllers\Api\TiketServisController;
 
 
 // Endpoint publik (tanpa login)
@@ -51,5 +52,21 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/suku-cadang/{kode}', [SukuCadangController::class, 'destroy'])
         ->middleware(\App\Http\Middleware\AdminOnly::class);
 
+});
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/tiket-servis', [TiketServisController::class, 'index']);
+
+    Route::get('/tiket-servis/{nomor_tiket}', [TiketServisController::class, 'show']);
+
+    Route::post('/tiket-servis', [TiketServisController::class, 'store']);
+
+    Route::put('/tiket-servis/{nomor_tiket}', [TiketServisController::class, 'update']);
+
+    Route::delete('/tiket-servis/{nomor_tiket}', [TiketServisController::class, 'destroy'])
+        ->middleware(\App\Http\Middleware\AdminOnly::class);
 });
 
