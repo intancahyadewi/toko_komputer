@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\PerangkatController;
 use App\Http\Middleware\AdminOnly;
+use App\Http\Controllers\Api\SukuCadangController;
+
 
 // Endpoint publik (tanpa login)
 Route::post('/login', [AuthController::class, 'login']);
@@ -34,3 +36,20 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware(AdminOnly::class);
 
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/suku-cadang', [SukuCadangController::class, 'index']);
+
+    Route::get('/suku-cadang/{kode}', [SukuCadangController::class, 'show']);
+
+    Route::post('/suku-cadang', [SukuCadangController::class, 'store']);
+
+    Route::put('/suku-cadang/{kode}', [SukuCadangController::class, 'update']);
+
+    Route::delete('/suku-cadang/{kode}', [SukuCadangController::class, 'destroy'])
+        ->middleware(\App\Http\Middleware\AdminOnly::class);
+
+});
+
