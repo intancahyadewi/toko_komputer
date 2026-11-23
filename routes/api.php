@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\SukuCadangController;
 use App\Http\Controllers\Api\TiketServisController;
 use App\Http\Controllers\Api\NotaPenjualanController;
 use App\Http\Controllers\Api\PelangganController;
+use App\Http\Controllers\Api\TeknisiController;
 
 // Endpoint publik (tanpa login)
 Route::post('/login', [AuthController::class, 'login']);
@@ -101,6 +102,23 @@ Route::middleware('auth:sanctum')->group(function () {
         ->middleware(\App\Http\Middleware\AdminOnly::class);
 
 });
+
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::get('/teknisi', [TeknisiController::class, 'index']);
+
+    Route::get('/teknisi/{id}', [TeknisiController::class, 'show']);
+
+    Route::post('/teknisi', [TeknisiController::class, 'store']);
+
+    Route::put('/teknisi/{id}', [TeknisiController::class, 'update']);
+
+    Route::delete('/teknisi/{id}', [TeknisiController::class, 'destroy'])
+        ->middleware(\App\Http\Middleware\AdminOnly::class);
+
+});
+
 
 
 
